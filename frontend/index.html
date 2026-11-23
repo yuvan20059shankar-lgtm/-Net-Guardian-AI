@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NetGuardian AI - Autonomous Cybersecurity SOC</title>
+    <meta name="description" content="Next-Gen Autonomous SOC: Detect. Defend. Recover. Automatically.">
+
+    <!-- Fonts: Inter, Rajdhani, JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Master Stylesheet -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- ================================================================
+             1. LEFT SIDEBAR NAVIGATION
+             ================================================================ -->
+        <aside class="sidebar" id="app-sidebar">
+            <div class="sidebar-header">
+                <div class="brand-logo-icon">
+                    <i data-lucide="shield-alert"></i>
+                </div>
+                <div class="brand-meta">
+                    <span class="brand-title">NetGuardian AI</span>
+                    <span class="brand-tagline">Detect • Defend • Recover</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-section-label">SOC Command</div>
+                
+                <a class="nav-item active" data-view="dashboard" id="nav-dashboard">
+                    <i data-lucide="layout-dashboard"></i>
+                    <span>Dashboard</span>
+                </a>
+                
+                <a class="nav-item" data-view="network" id="nav-network">
+                    <i data-lucide="server"></i>
+                    <span>Network Monitor</span>
+                    <span class="nav-badge" id="nav-device-count">10</span>
+                </a>
+                
+                <a class="nav-item" data-view="topology" id="nav-topology">
+                    <i data-lucide="network"></i>
+                    <span>Network Topology</span>
+                </a>
+
+                <div class="nav-section-label">Autonomous Defense</div>
+                
+                <a class="nav-item" data-view="threats" id="nav-threats">
+                    <i data-lucide="brain-circuit"></i>
+                    <span>AI Threat Detection</span>
+                    <span class="nav-badge badge-purple" id="nav-threats-badge">4 DETECTED</span>
+                </a>
+                
+                <a class="nav-item" data-view="recovery" id="nav-recovery">
+                    <i data-lucide="refresh-cw"></i>
+                    <span>Self-Healing Centre</span>
+                    <span class="nav-badge badge-green" id="nav-recovery-badge">READY</span>
+                </a>
+                
+                <a class="nav-item" data-view="alerts" id="nav-alerts">
+                    <i data-lucide="bell-ring"></i>
+                    <span>Security Alerts</span>
+                    <span class="nav-badge badge-red" id="nav-alerts-badge">3 ACTIVE</span>
+                </a>
+
+                <div class="nav-section-label">Intelligence & Config</div>
+                
+                <a class="nav-item" data-view="analytics" id="nav-analytics">
+                    <i data-lucide="line-chart"></i>
+                    <span>Analytics & History</span>
+                </a>
+                
+                <a class="nav-item" data-view="settings" id="nav-settings">
+                    <i data-lucide="sliders-horizontal"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="soc-system-card">
+                    <div class="soc-status-header">
+                        <div class="soc-indicator" id="sidebar-soc-status">
+                            <span class="pulse-dot"></span>
+                            <span>SOC ONLINE</span>
+                        </div>
+                        <span class="badge badge-cyan">v2.4 LTS</span>
+                    </div>
+                    <div class="soc-details">
+                        <span>Mode: AUTO-DEFEND</span>
+                        <span id="sidebar-latency">34ms</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ================================================================
+             2. TOP NAVIGATION BAR & HEADER
+             ================================================================ -->
+        <div class="main-wrapper">
+            <header class="top-navbar">
+                <div class="top-left">
+                    <button class="mobile-menu-toggle" id="mobile-toggle" aria-label="Toggle Navigation">
+                        <i data-lucide="menu"></i>
+                    </button>
+                    <div class="page-title-box">
+                        <div class="page-breadcrumb" id="header-breadcrumb">SOC CONSOLE // COMMAND OVERVIEW</div>
+                        <h1 class="page-title" id="header-page-title">
+                            <i data-lucide="layout-dashboard"></i>
+                            <span>Overview Dashboard</span>
+                        </h1>
+                    </div>
+                </div>
+
+                <div class="top-right">
+                    <!-- Live Link Status -->
+                    <div class="soc-pill pill-live">
+                        <span class="pulse-dot"></span>
+                        <span>SOC LINK: CONNECTED (38ms)</span>
+                    </div>
+
+                    <!-- Defcon / Threat Level Pill -->
+                    <div class="soc-pill pill-defcon" id="top-threat-pill">
+                        <i data-lucide="shield-check" style="width: 14px; height: 14px;"></i>
+                        <span id="top-defcon-text">DEFCON: ELEVATED (2 THREATS)</span>
+                    </div>
+
+                    <!-- Live Clock -->
+                    <div class="clock-display" title="Synchronized SOC Atomic Clock">
+                        <i data-lucide="clock" style="width: 14px; height: 14px; color: var(--cyan);"></i>
+                        <span class="clock-time" id="soc-clock">09:45:00 UTC</span>
+                    </div>
+
+                    <!-- Notification Center -->
+                    <div class="notification-container">
+                        <button class="icon-btn" id="btn-notifications" aria-label="Notifications">
+                            <i data-lucide="bell"></i>
+                            <span class="badge-counter" id="notif-count">3</span>
+                        </button>
+                        
+                        <!-- Notification Dropdown -->
+                        <div class="notification-dropdown" id="notif-dropdown">
+                            <div class="notif-header">
+                                <span>Recent Threat Advisories</span>
+                                <span class="badge badge-purple">LIVE</span>
+                            </div>
+                            <div class="notif-list" id="notif-dropdown-list">
+                                <!-- Populated dynamically by app.js -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- User Profile Placeholder -->
+                    <div class="user-profile-btn" id="btn-user-profile" title="Active SOC Operator">
+                        <div class="avatar-circle">AV</div>
+                        <div class="user-info">
+                            <span class="user-name">Cmdr. Alex Vance</span>
+                            <span class="user-role">SecOps Lead // Tier-4</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- ================================================================
+                 3. MAIN CONTENT CONTAINER (SPA VIEWS)
+                 ================================================================ -->
+            <main class="main-content">
+
+                <!-- ------------------------------------------------------------
+                     VIEW 1: OVERVIEW DASHBOARD
+                     ------------------------------------------------------------ -->
+                <section class="view-section active" id="view-dashboard">
+                    <!-- KPI Metrics Grid -->
+                    <div class="kpi-grid">
+                        <div class="kpi-card kpi-cyan">
+                            <div class="kpi-header">
+                                <span class="kpi-label">Total Devices</span>
+                                <div class="kpi-icon"><i data-lucide="layers"></i></div>
+                            </div>
+                            <div class="kpi-value" id="kpi-total-devices">10</div>
+                            <div class="kpi-footer">100% telemetry coverage</div>
+                        </div>
+
+                        <div class="kpi-card kpi-green">
+                            <div class="kpi-header">
+                                <span class="kpi-label">Online Devices</span>
+                                <div class="kpi-icon"><i data-lucide="check-circle-2"></i></div>
+                            </div>
+                            <div class="kpi-value" id="kpi-online-devices">8</div>
+                            <div class="kpi-footer"><span class="pulse-dot"></span> Active & responding</div>
+                        </div>
+
+                        <div class="kpi-card kpi-red">
+                            <div class="kpi-header">
+                                <span class="kpi-label">Offline Devices</span>
+                                <div class="kpi-icon"><i data-lucide="x-circle"></i></div>
+                            </div>
+                            <div class="kpi-value" id="kpi-offline-devices">1</div>
+                            <div class="kpi-footer">Scheduled maintenance</div>
+                        </div>
+
+                        <div class="kpi-card kpi-purple">
+                            <div class="kpi-header">
+                                <span class="kpi-label">Suspicious Devices</span>
+                                <div class="kpi-icon"><i data-lucide="alert-triangle"></i></div>
+                            </div>
+                            <div class="kpi-value" id="kpi-suspicious-devices">1</div>
+                            <div class="kpi-footer">AI Anomaly score &gt; 0.75</div>
+                        </div>
+
+                        <div class="kpi-card kpi-red">
+                            <div class="kpi-header">
+                                <span class="kpi-label">Active Threats</span>
+                                <div class="kpi-icon"><i data-lucide="flame"></i></div>
+                            </div>
+                            <div class="kpi-value" id="kpi-active-threats">2</div>
+                            <div class="kpi-footer">Auto-containment active</div>
+                        </div>
+
+                        <div class="kpi-card kpi-green">
+                            <div class="kpi-header">
+                                <span class="kpi-label">Network Health</span>
+                                <div class="kpi-icon"><i data-lucide="activity"></i></div>
+                            </div>
+                            <div class="kpi-value" id="kpi-network-health">94.0<span class="kpi-unit">%</span></div>
+                            <div class="kpi-footer">Optimal mesh tolerance</div>
+                        </div>
+
+                        <div class="kpi-card kpi-cyan">
+                            <div class="kpi-header">
+                                <span class="kpi-label">Successful Recoveries</span>
+                                <div class="kpi-icon"><i data-lucide="shield-check"></i></div>
+                            </div>
+                            <div class="kpi-value" id="kpi-recoveries">17</div>
+                            <div class="kpi-footer">Autonomous failovers</div>
+                        </div>
+                    </div>
+
+                    <!-- Main Center Section: Live Network Topology Preview + Right Cards -->
+                    <div class="dashboard-grid-main">
+                        <!-- Live Network Topology Card -->
+                        <div class="soc-card glow-cyan live-topology-card">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <i data-lucide="orbit"></i>
+                                    <span>Live Network Topology Preview</span>
+                                </div>
+                                <div class="card-actions">
+                                    <span class="badge badge-green"><span class="pulse-dot"></span> REALTIME MESH</span>
+                                    <button class="btn btn-outline btn-sm" id="btn-goto-topology">
+                                        <i data-lucide="maximize-2" style="width: 14px; height: 14px;"></i>
+                                        <span>Full Interactive Topology</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body" style="padding: 12px;">
+                                <div class="topology-mini-canvas-container" id="mini-topology-container">
+                                    <div class="topology-radar-scan"></div>
+                                    <svg class="topology-mini-svg" id="mini-topology-svg" viewBox="0 0 900 460">
+                                        <!-- Rendered dynamically by dashboard.js -->
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Side 3 Cards -->
+                        <div class="dashboard-right-stack">
+                            <!-- 1. Critical Incidents -->
+                            <div class="soc-card glow-red">
+                                <div class="card-header">
+                                    <div class="card-title">
+                                        <i data-lucide="shield-alert" style="color: var(--red-bright);"></i>
+                                        <span>Critical Incidents</span>
+                                    </div>
+                                    <span class="badge badge-red" id="incident-count-badge">3 ALERTS</span>
+                                </div>
+                                <div class="card-body" style="padding: 14px 20px;">
+                                    <div id="dashboard-critical-incidents-list">
+                                        <!-- Rendered dynamically -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 2. Network Security Posture -->
+                            <div class="soc-card">
+                                <div class="card-header">
+                                    <div class="card-title">
+                                        <i data-lucide="cpu"></i>
+                                        <span>Network Security Posture</span>
+                                    </div>
+                                    <span class="badge badge-cyan">92 / 100</span>
+                                </div>
+                                <div class="card-body" style="padding: 14px 20px;">
+                                    <div class="posture-bar-group">
+                                        <div class="posture-item">
+                                            <div class="posture-label-row">
+                                                <span>Firewall &amp; Perimeter DPI</span>
+                                                <span style="color: var(--green-bright);">98%</span>
+                                            </div>
+                                            <div class="progress-track">
+                                                <div class="progress-fill fill-green" style="width: 98%;"></div>
+                                            </div>
+                                        </div>
+                                        <div class="posture-item">
+                                            <div class="posture-label-row">
+                                                <span>AI Anomaly Detection Engine</span>
+                                                <span style="color: var(--purple-light);">94%</span>
+                                            </div>
+                                            <div class="progress-track">
+                                                <div class="progress-fill fill-purple" style="width: 94%;"></div>
+                                            </div>
+                                        </div>
+                                        <div class="posture-item">
+                                            <div class="posture-label-row">
+                                                <span>Subnet Isolation &amp; Zero Trust</span>
+                                                <span style="color: var(--cyan);">88%</span>
+                                            </div>
+                                            <div class="progress-track">
+                                                <div class="progress-fill fill-cyan" style="width: 88%;"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 3. User Activity Monitoring -->
+                            <div class="soc-card">
+                                <div class="card-header">
+                                    <div class="card-title">
+                                        <i data-lucide="users"></i>
+                                        <span>User Activity Monitoring</span>
+                                    </div>
+                                    <span class="badge badge-muted">5 ACTIVE</span>
+                                </div>
+                                <div class="card-body" style="padding: 8px 16px;">
+                                    <table class="user-activity-table">
+                                        <thead>
+                                            <tr>
+                                                <th>User / Entity</th>
+                                                <th>IP</th>
+                                                <th>Action</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="dashboard-user-activity-body">
+                                            <!-- Rendered dynamically -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Realtime Network Traffic Graph Card -->
+                    <div class="soc-card glow-cyan" style="margin-bottom: 24px;">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i data-lucide="activity"></i>
+                                <span>Realtime Network Traffic Telemetry (Mbps)</span>
+                            </div>
+                            <div class="card-actions">
+                                <span class="badge badge-cyan" id="live-throughput-badge">RX: 482 Mbps | TX: 410 Mbps</span>
+                            </div>
+                        </div>
+                        <div class="card-body" style="height: 240px; position: relative;">
+                            <canvas id="dashboard-traffic-chart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Bottom 4 Cards Grid -->
+                    <div class="dashboard-grid-bottom">
+                        <!-- 1. Alert Overview -->
+                        <div class="soc-card">
+                            <div class="card-header">
+                                <div class="card-title"><i data-lucide="pie-chart"></i><span>Alert Overview</span></div>
+                            </div>
+                            <div class="card-body" style="height: 210px; position: relative; padding: 10px;">
+                                <canvas id="chart-alert-overview"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- 2. Threat Intelligence -->
+                        <div class="soc-card">
+                            <div class="card-header">
+                                <div class="card-title"><i data-lucide="globe"></i><span>Threat Intelligence</span></div>
+                                <span class="badge badge-purple">GLOBAL CVE</span>
+                            </div>
+                            <div class="card-body" style="padding: 14px;">
+                                <div style="display: flex; flex-direction: column; gap: 10px; font-size: 0.78rem;">
+                                    <div style="background: rgba(0,0,0,0.25); padding: 8px 10px; border-radius: 6px; border-left: 3px solid var(--red);">
+                                        <div style="font-weight: 600; color: #fff;">CVE-2026-8941 // DNS Tunneling</div>
+                                        <div style="color: var(--text-muted); font-size: 0.72rem;">High exploit rate targeting corporate Active Directory.</div>
+                                    </div>
+                                    <div style="background: rgba(0,0,0,0.25); padding: 8px 10px; border-radius: 6px; border-left: 3px solid var(--amber);">
+                                        <div style="font-weight: 600; color: #fff;">CVE-2026-4412 // SMB Lateral Sweep</div>
+                                        <div style="color: var(--text-muted); font-size: 0.72rem;">Automated worm payload propagating on port 445.</div>
+                                    </div>
+                                    <div style="background: rgba(0,0,0,0.25); padding: 8px 10px; border-radius: 6px; border-left: 3px solid var(--cyan);">
+                                        <div style="font-weight: 600; color: #fff;">NetGuardian Fortify Feed v12</div>
+                                        <div style="color: var(--text-muted); font-size: 0.72rem;">4,290 new malicious IPs synchronized to perimeter.</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. Asset Health -->
+                        <div class="soc-card">
+                            <div class="card-header">
+                                <div class="card-title"><i data-lucide="hard-drive"></i><span>Asset Health</span></div>
+                            </div>
+                            <div class="card-body" style="padding: 16px;">
+                                <div class="posture-bar-group">
+                                    <div class="posture-item">
+                                        <div class="posture-label-row">
+                                            <span>Core Gateway / Router</span>
+                                            <span style="color: var(--green-bright);">99.2%</span>
+                                        </div>
+                                        <div class="progress-track"><div class="progress-fill fill-green" style="width: 99.2%;"></div></div>
+                                    </div>
+                                    <div class="posture-item">
+                                        <div class="posture-label-row">
+                                            <span>Servers Cluster (3 Nodes)</span>
+                                            <span style="color: var(--cyan);">96.5%</span>
+                                        </div>
+                                        <div class="progress-track"><div class="progress-fill fill-cyan" style="width: 96.5%;"></div></div>
+                                    </div>
+                                    <div class="posture-item">
+                                        <div class="posture-label-row">
+                                            <span>Workstations (5 Hosts)</span>
+                                            <span style="color: var(--amber);">87.1%</span>
+                                        </div>
+                                        <div class="progress-track"><div class="progress-fill fill-purple" style="width: 87.1%;"></div></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 4. Recent Network Events -->
+                        <div class="soc-card">
+                            <div class="card-header">
+                                <div class="card-title"><i data-lucide="terminal"></i><span>Recent Network Events</span></div>
+                                <span class="badge badge-green"><span class="pulse-dot"></span> LIVE</span>
+                            </div>
+                            <div class="card-body" style="padding: 12px;">
+                                <div class="event-ticker-list" id="dashboard-recent-events-list">
+                                    <!-- Rendered dynamically -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ------------------------------------------------------------
+                     VIEW 2: NETWORK MONITOR
+                     ------------------------------------------------------------ -->
+                <section class="view-section" id="view-network">
+                    <!-- Filter and Search Bar -->
+                    <div class="filter-bar">
+                        <div class="search-input-wrapper">
+                            <i data-lucide="search"></i>
+                            <input type="text" id="device-search-input" class="search-input" placeholder="Search devices by name, IP address, role, or MAC...">
+                        </div>
+                        <div class="filter-group">
+                            <select id="device-status-filter" class="select-cyber">
+                                <option value="all">All Statuses</option>
+                                <option value="online">Online Only</option>
+                                <option value="suspicious">Suspicious Only</option>
+                                <option value="offline">Offline Only</option>
+                                <option value="recovering">Recovering Only</option>
+                            </select>
+                            <select id="device-type-filter" class="select-cyber">
+                                <option value="all">All Device Types</option>
+                                <option value="Router">Routers</option>
+                                <option value="Server">Servers</option>
+                                <option value="Computer">Workstations</option>
+                                <option value="Firewall">Firewalls</option>
+                            </select>
+                            <button class="btn btn-cyan btn-sm" id="btn-refresh-devices">
+                                <i data-lucide="rotate-cw" style="width: 14px; height: 14px;"></i>
+                                <span>Scan Subnet</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Monitored Devices Table -->
+                    <div class="soc-card glow-cyan">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i data-lucide="server"></i>
+                                <span>Monitored Enterprise Infrastructure (10 Nodes)</span>
+                            </div>
+                            <span class="badge badge-cyan" id="device-table-summary">10 Devices Registered</span>
+                        </div>
+                        <div class="card-body" style="padding: 0; overflow-x: auto;">
+                            <table class="devices-table">
+                                <thead>
+                                    <tr>
+                                        <th>Device Name &amp; Role</th>
+                                        <th>IP Address</th>
+                                        <th>Type</th>
+                                        <th>Status</th>
+                                        <th>Traffic Activity</th>
+                                        <th>CPU / Memory</th>
+                                        <th>Packet Loss</th>
+                                        <th>Last Active</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="devices-table-body">
+                                    <!-- 10 devices rendered dynamically by network.js -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ------------------------------------------------------------
+                     VIEW 3: NETWORK TOPOLOGY
+                     ------------------------------------------------------------ -->
+                <section class="view-section" id="view-topology">
+                    <div class="topology-master-wrapper">
+                        <!-- Top Toolbar Overlay -->
+                        <div class="topology-toolbar">
+                            <div class="topology-legend">
+                                <div class="legend-item">
+                                    <span class="pulse-dot"></span>
+                                    <span>Healthy (8)</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="pulse-dot dot-purple"></span>
+                                    <span>Suspicious (1)</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="pulse-dot dot-red"></span>
+                                    <span>Failed / Offline (1)</span>
+                                </div>
+                                <div class="legend-item" style="color: var(--cyan);">
+                                    <i data-lucide="activity" style="width: 14px; height: 14px;"></i>
+                                    <span>Active Traffic Pulse</span>
+                                </div>
+                            </div>
+
+                            <div class="topology-controls">
+                                <button class="btn btn-outline btn-sm" id="btn-topo-zoom-in" title="Zoom In">
+                                    <i data-lucide="zoom-in" style="width: 14px; height: 14px;"></i>
+                                </button>
+                                <button class="btn btn-outline btn-sm" id="btn-topo-zoom-out" title="Zoom Out">
+                                    <i data-lucide="zoom-out" style="width: 14px; height: 14px;"></i>
+                                </button>
+                                <button class="btn btn-outline btn-sm" id="btn-topo-reset" title="Reset View">
+                                    <i data-lucide="refresh-cw" style="width: 14px; height: 14px;"></i>
+                                    <span>Reset</span>
+                                </button>
+                                <button class="btn btn-purple btn-sm" id="btn-topo-highlight-threat" title="Highlight Threat Nodes">
+                                    <i data-lucide="shield-alert" style="width: 14px; height: 14px;"></i>
+                                    <span>Focus Threat</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- SVG Canvas Visualization -->
+                        <svg id="topology-svg" viewBox="0 0 1000 550" preserveAspectRatio="xMidYMid meet">
+                            <defs>
+                                <!-- Filter for neon glow effect -->
+                                <filter id="glow-cyan" x="-20%" y="-20%" width="140%" height="140%">
+                                    <feGaussianBlur stdDeviation="4" result="blur" />
+                                    <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                                </filter>
+                                <filter id="glow-purple" x="-20%" y="-20%" width="140%" height="140%">
+                                    <feGaussianBlur stdDeviation="5" result="blur" />
+                                    <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                                </filter>
+                                <filter id="glow-red" x="-20%" y="-20%" width="140%" height="140%">
+                                    <feGaussianBlur stdDeviation="5" result="blur" />
+                                    <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                                </filter>
+                            </defs>
+
+                            <!-- Background Grid -->
+                            <g id="topology-grid-layer"></g>
+
+                            <!-- Connecting Network Lines -->
+                            <g id="topology-links-layer"></g>
+
+                            <!-- Moving Packet Flow Particles -->
+                            <g id="topology-particles-layer"></g>
+
+                            <!-- Network Devices Nodes -->
+                            <g id="topology-nodes-layer"></g>
+                        </svg>
+
+                        <!-- Topology Node Detail Inspector Flyout -->
+                        <div class="topology-inspector-panel" id="topo-inspector">
+                            <div class="card-header" style="padding: 12px 16px;">
+                                <div class="card-title" id="topo-inspect-title" style="font-size: 0.95rem;">
+                                    <i data-lucide="info"></i> Node Inspector
+                                </div>
+                                <button class="modal-close-btn" id="btn-close-topo-inspector">&times;</button>
+                            </div>
+                            <div class="card-body" style="padding: 14px 16px; font-size: 0.8rem;">
+                                <div id="topo-inspect-content">
+                                    <!-- Populated on node click -->
+                                </div>
+                                <div style="display: flex; gap: 8px; margin-top: 14px;">
+                                    <button class="btn btn-cyan btn-sm" id="btn-inspect-full" style="flex: 1;">Full Telemetry</button>
+                                    <button class="btn btn-red btn-sm" id="btn-inspect-toggle-fail">Fail Node</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ------------------------------------------------------------
+                     VIEW 4: AI THREAT DETECTION
+                     ------------------------------------------------------------ -->
+                <section class="view-section" id="view-threats">
+                    <!-- Futuristic Purple AI Header Banner -->
+                    <div class="ai-banner-card">
+                        <div class="ai-banner-info">
+                            <div class="ai-tag">
+                                <i data-lucide="sparkles" style="width: 14px; height: 14px;"></i>
+                                <span>ISOLATION FOREST MACHINE LEARNING ENGINE // DEMO PIPELINE</span>
+                            </div>
+                            <h2 class="ai-banner-title">Autonomous Threat &amp; Anomaly Detection</h2>
+                            <p class="ai-banner-desc">
+                                NetGuardian AI inspects network multidimensional vectors (packet entropy, payload variance, connection frequency) to isolate Zero-Day attacks and insider exfiltration without static signatures.
+                                <br><strong style="color: var(--cyan);">Live Engine:</strong> Active Scikit-Learn Isolation Forest & Threat Classification Engine connected via backend REST API.
+                            </p>
+                        </div>
+                        <div class="ai-gauge-box">
+                            <div class="anomaly-gauge-circle">
+                                <span class="anomaly-val" id="ai-top-anomaly-score">0.94</span>
+                                <span class="anomaly-sub">SCORE</span>
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 4px;">
+                                <span style="font-weight: 700; color: #fff;">HIGH-RISK ANOMALY</span>
+                                <span style="font-size: 0.72rem; color: var(--purple-light); font-family: var(--font-mono);">Outlier Threshold: 0.75</span>
+                                <span class="badge badge-purple" style="width: fit-content;">MODEL: ISO-FOREST-v3</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI Threat Filter & Search Bar -->
+                    <div class="filter-bar" style="margin-bottom: 20px;">
+                        <div class="search-input-wrapper">
+                            <i data-lucide="search"></i>
+                            <input type="text" id="threat-search-input" class="search-input" placeholder="Search threats by ID, attack type, target IP, or vector...">
+                        </div>
+                        <div class="tab-pill-group" id="threat-severity-pill-group">
+                            <button class="tab-pill active" data-threat-severity="all">All Severities</button>
+                            <button class="tab-pill" data-threat-severity="CRITICAL">Critical</button>
+                            <button class="tab-pill" data-threat-severity="HIGH">High</button>
+                            <button class="tab-pill" data-threat-severity="MEDIUM">Medium</button>
+                            <button class="tab-pill" data-threat-severity="LOW">Low</button>
+                        </div>
+                        <span class="badge badge-purple" id="threats-filtered-count">4 Records</span>
+                    </div>
+
+                    <!-- AI Threat Records Table / Cards -->
+                    <div class="threats-list" id="ai-threats-container">
+                        <!-- Populated dynamically by threats.js -->
+                    </div>
+                </section>
+
+                <!-- ------------------------------------------------------------
+                     VIEW 5: SELF-HEALING CENTRE
+                     ------------------------------------------------------------ -->
+                <section class="view-section" id="view-recovery">
+                    <!-- Action Bar with target selector and the Self-Healing control buttons -->
+                    <div class="healing-action-bar">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <label for="recovery-target-select" style="font-size: 0.78rem; font-family: var(--font-mono); color: var(--text-secondary); white-space: nowrap;">
+                                Simulation Target:
+                            </label>
+                            <select id="recovery-target-select" class="select-cyber" style="min-width: 250px;">
+                                <option value="dev-4" selected>Server 03 / Backup HES/MDMS (192.168.1.12)</option>
+                                <option value="dev-3">Server 02 / MDMS Server (192.168.1.11)</option>
+                                <option value="dev-2">Server 01 / Head-End System (192.168.1.10)</option>
+                                <option value="dev-1">Router 01 / Smart Meter Gateway (192.168.1.1)</option>
+                                <option value="dev-5">Smart Meter 01 - Yelahanka (192.168.1.20)</option>
+                                <option value="dev-6">Smart Meter 02 - Vijayanagar (192.168.1.21)</option>
+                                <option value="dev-7">Smart Meter 03 - Rajajinagar (192.168.1.22)</option>
+                                <option value="dev-8">Smart Meter 04 - Hebbal (192.168.1.23)</option>
+                                <option value="dev-9">Smart Meter 05 - Jayanagar (192.168.1.24)</option>
+                                <option value="dev-10">Firewall 01 / Security Firewall (192.168.1.254)</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-red" id="btn-simulate-failure">
+                            <i data-lucide="zap-off"></i>
+                            <span>Simulate Failure</span>
+                        </button>
+                        <button class="btn btn-amber" id="btn-detect-failures" style="border-color: #f59e0b; color: #f59e0b;">
+                            <i data-lucide="search"></i>
+                            <span>Detect Failures</span>
+                        </button>
+                        <button class="btn btn-amber" id="btn-isolate-device" style="border-color: #ea580c; color: #ea580c;">
+                            <i data-lucide="shield-alert"></i>
+                            <span>Isolate Device</span>
+                        </button>
+                        <button class="btn btn-cyan" id="btn-find-alt-route">
+                            <i data-lucide="git-branch"></i>
+                            <span>Find Alternative Route</span>
+                        </button>
+                        <button class="btn btn-purple" id="btn-start-recovery">
+                            <i data-lucide="play"></i>
+                            <span>Start Recovery</span>
+                        </button>
+                        <button class="btn btn-green" id="btn-restore-device">
+                            <i data-lucide="check-check"></i>
+                            <span>Restore Device</span>
+                        </button>
+                    </div>
+
+                    <!-- Self-Healing Engine KPI Metrics Grid -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-bottom: 20px;">
+                        <div class="soc-card" style="padding: 12px; text-align: center;">
+                            <div style="font-size: 0.72rem; color: var(--text-secondary); text-transform: uppercase;">Total Failures</div>
+                            <div style="font-size: 1.4rem; font-weight: 700; color: #fff; font-family: var(--font-mono);" id="healing-kpi-total-failures">1</div>
+                        </div>
+                        <div class="soc-card" style="padding: 12px; text-align: center;">
+                            <div style="font-size: 0.72rem; color: var(--text-secondary); text-transform: uppercase;">Active Failures</div>
+                            <div style="font-size: 1.4rem; font-weight: 700; color: var(--red-bright); font-family: var(--font-mono);" id="healing-kpi-active-failures">1</div>
+                        </div>
+                        <div class="soc-card" style="padding: 12px; text-align: center;">
+                            <div style="font-size: 0.72rem; color: var(--text-secondary); text-transform: uppercase;">Devices Isolated</div>
+                            <div style="font-size: 1.4rem; font-weight: 700; color: var(--amber); font-family: var(--font-mono);" id="healing-kpi-isolated-devices">0</div>
+                        </div>
+                        <div class="soc-card" style="padding: 12px; text-align: center;">
+                            <div style="font-size: 0.72rem; color: var(--text-secondary); text-transform: uppercase;">Recoveries OK</div>
+                            <div style="font-size: 1.4rem; font-weight: 700; color: var(--green-bright); font-family: var(--font-mono);" id="healing-kpi-successful-recoveries">5</div>
+                        </div>
+                        <div class="soc-card" style="padding: 12px; text-align: center;">
+                            <div style="font-size: 0.72rem; color: var(--text-secondary); text-transform: uppercase;">Recoveries Failed</div>
+                            <div style="font-size: 1.4rem; font-weight: 700; color: var(--text-muted); font-family: var(--font-mono);" id="healing-kpi-failed-recoveries">2</div>
+                        </div>
+                        <div class="soc-card" style="padding: 12px; text-align: center;">
+                            <div style="font-size: 0.72rem; color: var(--text-secondary); text-transform: uppercase;">Success Rate</div>
+                            <div style="font-size: 1.4rem; font-weight: 700; color: var(--cyan); font-family: var(--font-mono);" id="healing-kpi-success-rate">71.4%</div>
+                        </div>
+                        <div class="soc-card" style="padding: 12px; text-align: center;">
+                            <div style="font-size: 0.72rem; color: var(--text-secondary); text-transform: uppercase;">Avg Duration</div>
+                            <div style="font-size: 1.4rem; font-weight: 700; color: var(--purple-light); font-family: var(--font-mono);" id="healing-kpi-avg-duration">1.85s</div>
+                        </div>
+                    </div>
+
+                    <div class="healing-overview-grid">
+                        <!-- Left: Recovery Pipeline Status Card -->
+                        <div class="soc-card glow-cyan recovery-pipeline-card">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <i data-lucide="shield-check"></i>
+                                    <span>Autonomous Recovery Pipeline Status</span>
+                                </div>
+                                <span class="badge badge-cyan" id="recovery-pipeline-status">STANDBY // READY</span>
+                            </div>
+                            <div class="card-body">
+                                <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 14px;">
+                                    When an outage or partition is detected, NetGuardian activates dynamic mesh rerouting to bypass the failed node while staging automated rollback and service verification.
+                                </p>
+
+                                <div class="pipeline-steps">
+                                    <div class="pipeline-step" id="pipe-step-1">
+                                        <div class="step-num">1</div>
+                                        <div class="step-name">Fault Detection</div>
+                                        <div class="step-desc">Heartbeat loss isolated</div>
+                                    </div>
+                                    <div class="pipeline-step" id="pipe-step-2">
+                                        <div class="step-num">2</div>
+                                        <div class="step-name">Traffic Reroute</div>
+                                        <div class="step-desc">Engage backup mesh</div>
+                                    </div>
+                                    <div class="pipeline-step" id="pipe-step-3">
+                                        <div class="step-num">3</div>
+                                        <div class="step-name">Self-Healing</div>
+                                        <div class="step-desc">Service rollback/restart</div>
+                                    </div>
+                                    <div class="pipeline-step" id="pipe-step-4">
+                                        <div class="step-num">4</div>
+                                        <div class="step-name">Verification</div>
+                                        <div class="step-desc">Zero packet loss verified</div>
+                                    </div>
+                                </div>
+
+                                <!-- Terminal Output Stream for Recovery Operations -->
+                                <div style="margin-top: 20px;">
+                                    <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim); margin-bottom: 6px; text-transform: uppercase;">
+                                        Autonomous Healing Terminal Log:
+                                    </div>
+                                    <div class="healing-terminal" id="healing-terminal-output">
+                                        <div class="terminal-line"><span class="terminal-time">[SYS_INIT]</span> NetGuardian Self-Healing Controller initialized.</div>
+                                        <div class="terminal-line"><span class="terminal-time">[SYS_READY]</span> Standby cluster: Server 03 (192.168.1.12) ready for immediate failover proxy.</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right: Failover Nodes & Alternative Route Status -->
+                        <div class="dashboard-right-stack">
+                            <!-- Backup Server Status -->
+                            <div class="soc-card">
+                                <div class="card-header">
+                                    <div class="card-title">
+                                        <i data-lucide="hard-drive"></i>
+                                        <span>Backup Server Status</span>
+                                    </div>
+                                    <span class="badge badge-green" id="backup-server-badge">STANDBY READY</span>
+                                </div>
+                                <div class="card-body" style="font-size: 0.8rem; display: flex; flex-direction: column; gap: 10px;">
+                                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px;">
+                                        <span style="color: var(--text-secondary);">Target Standby:</span>
+                                        <strong style="color: #fff;">Server 03 (192.168.1.12)</strong>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px;">
+                                        <span style="color: var(--text-secondary);">Role:</span>
+                                        <span style="color: var(--cyan);">Disaster Recovery Vault</span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px;">
+                                        <span style="color: var(--text-secondary);">Sync Replication Lag:</span>
+                                        <span style="color: var(--green-bright);">0.08 ms</span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between;">
+                                        <span style="color: var(--text-secondary);">Snapshot Status:</span>
+                                        <span style="color: #fff;">Valid (12m ago)</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Dynamic Alternative Route Visual Plan -->
+                            <div class="soc-card">
+                                <div class="card-header">
+                                    <div class="card-title">
+                                        <i data-lucide="git-merge"></i>
+                                        <span>Alternative Route Plan</span>
+                                    </div>
+                                    <span class="badge badge-amber" id="alt-route-active-badge">INACTIVE</span>
+                                </div>
+                                <div class="card-body" style="font-size: 0.8rem;">
+                                    <div id="alt-route-plan-display" style="color: var(--text-muted); line-height: 1.5;">
+                                        No active reroute engaged. Primary network routes operating at nominal capacity. Click <strong>"Find Alternative Route"</strong> to calculate failover path.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recovery History Audit Table -->
+                    <div class="soc-card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i data-lucide="history"></i>
+                                <span>Self-Healing Operations History</span>
+                            </div>
+                            <span class="badge badge-cyan" id="recovery-history-count">3 Recoveries Recorded</span>
+                        </div>
+                        <div class="card-body" style="padding: 0; overflow-x: auto;">
+                            <table class="devices-table">
+                                <thead>
+                                    <tr>
+                                        <th>Op ID</th>
+                                        <th>Timestamp</th>
+                                        <th>Target Device</th>
+                                        <th>Fault Type</th>
+                                        <th>Action Taken</th>
+                                        <th>Duration</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recovery-history-tbody">
+                                    <!-- Populated dynamically by recovery.js -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ------------------------------------------------------------
+                     VIEW 6: SECURITY ALERTS
+                     ------------------------------------------------------------ -->
+                <section class="view-section" id="view-alerts">
+                    <!-- Filters & Search -->
+                    <div class="alerts-filter-row">
+                        <div class="search-input-wrapper">
+                            <i data-lucide="search"></i>
+                            <input type="text" id="alert-search-input" class="search-input" placeholder="Search alerts by ID, threat type, or affected IP...">
+                        </div>
+                        <div class="tab-pill-group">
+                            <button class="tab-pill active" data-severity="all">All Severities</button>
+                            <button class="tab-pill" data-severity="CRITICAL">Critical</button>
+                            <button class="tab-pill" data-severity="HIGH">High</button>
+                            <button class="tab-pill" data-severity="MEDIUM">Medium</button>
+                            <button class="tab-pill" data-severity="LOW">Low</button>
+                        </div>
+                        <select id="alert-status-filter" class="select-cyber">
+                            <option value="all">All Statuses</option>
+                            <option value="ACTIVE">Active</option>
+                            <option value="IN_PROGRESS">In Progress</option>
+                            <option value="RESOLVED">Resolved</option>
+                        </select>
+                    </div>
+
+                    <!-- Alerts Table -->
+                    <div class="soc-card glow-cyan">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i data-lucide="bell"></i>
+                                <span>Security Incident &amp; Alert Ledger</span>
+                            </div>
+                            <span class="badge badge-red" id="alert-table-summary">6 Total Alerts</span>
+                        </div>
+                        <div class="card-body" style="padding: 0; overflow-x: auto;">
+                            <table class="devices-table">
+                                <thead>
+                                    <tr>
+                                        <th>Alert ID</th>
+                                        <th>Threat Classification</th>
+                                        <th>Affected Target</th>
+                                        <th>Severity</th>
+                                        <th>Detection Timestamp</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="alerts-table-body">
+                                    <!-- Rendered dynamically by alerts.js -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ------------------------------------------------------------
+                     VIEW 7: ANALYTICS & HISTORY
+                     ------------------------------------------------------------ -->
+                <section class="view-section" id="view-analytics">
+                    <!-- Date Range Filter & Summary -->
+                    <div class="filter-bar">
+                        <div class="page-title-box">
+                            <h2 style="font-family: var(--font-heading); font-size: 1.2rem; color: #fff; display: flex; align-items: center; gap: 8px;">
+                                <span>SOC Telemetry &amp; Historical Performance</span>
+                                <span class="badge badge-cyan" style="font-size: 0.68rem; font-weight: 600; text-transform: uppercase;">Simulated Telemetry</span>
+                            </h2>
+                        </div>
+                        <div class="tab-pill-group">
+                            <button class="tab-pill active" data-range="24h">Last 24 Hours</button>
+                            <button class="tab-pill" data-range="7d">Last 7 Days</button>
+                            <button class="tab-pill" data-range="30d">Last 30 Days</button>
+                        </div>
+                    </div>
+
+                    <!-- Summary KPI Cards -->
+                    <div class="analytics-metrics-grid">
+                        <div class="kpi-card kpi-purple">
+                            <div class="kpi-header">
+                                <span class="kpi-label">Mean Time to Detect (MTTD)</span>
+                                <div class="kpi-icon"><i data-lucide="gauge"></i></div>
+                            </div>
+                            <div class="kpi-value">1.4<span class="kpi-unit">sec</span></div>
+                            <div class="kpi-footer">Simulated anomaly detection speed</div>
+                        </div>
+
+                        <div class="kpi-card kpi-green">
+                            <div class="kpi-header">
+                                <span class="kpi-label">Mean Time to Recover (MTTR)</span>
+                                <div class="kpi-icon"><i data-lucide="timer"></i></div>
+                            </div>
+                            <div class="kpi-value">4.2<span class="kpi-unit">sec</span></div>
+                            <div class="kpi-footer">Simulated failover convergence</div>
+                        </div>
+
+                        <div class="kpi-card kpi-red">
+                            <div class="kpi-header">
+                                <span class="kpi-label">Total Blocked Attacks</span>
+                                <div class="kpi-icon"><i data-lucide="shield-x"></i></div>
+                            </div>
+                            <div class="kpi-value">1,428</div>
+                            <div class="kpi-footer">Simulated edge attack telemetry</div>
+                        </div>
+
+                        <div class="kpi-card kpi-cyan">
+                            <div class="kpi-header">
+                                <span class="kpi-label">Network Overall Availability</span>
+                                <div class="kpi-icon"><i data-lucide="check-circle-2"></i></div>
+                            </div>
+                            <div class="kpi-value">99.98<span class="kpi-unit">%</span></div>
+                            <div class="kpi-footer">Simulated device SLA baseline</div>
+                        </div>
+                    </div>
+
+                    <!-- Historical Charts Grid -->
+                    <div class="analytics-charts-grid">
+                        <!-- 1. Network Traffic History -->
+                        <div class="soc-card chart-card-tall">
+                            <div class="card-header">
+                                <div class="card-title"><i data-lucide="activity"></i><span>Inbound / Outbound vs Scrubbed Malicious Traffic (Simulated)</span></div>
+                            </div>
+                            <div class="card-body chart-canvas-wrap">
+                                <canvas id="chart-traffic-history"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- 2. Device Availability & Uptime -->
+                        <div class="soc-card chart-card-tall">
+                            <div class="card-header">
+                                <div class="card-title"><i data-lucide="server"></i><span>Device Availability &amp; Uptime Index (%) (Live Simulated Status)</span></div>
+                            </div>
+                            <div class="card-body chart-canvas-wrap">
+                                <canvas id="chart-device-availability"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- 3. Threat Detection History -->
+                        <div class="soc-card chart-card-tall">
+                            <div class="card-header">
+                                <div class="card-title"><i data-lucide="shield-alert"></i><span>Threat Incidents by Severity Classification (Simulated)</span></div>
+                            </div>
+                            <div class="card-body chart-canvas-wrap">
+                                <canvas id="chart-threat-history"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- 4. Recovery Operations -->
+                        <div class="soc-card chart-card-tall">
+                            <div class="card-header">
+                                <div class="card-title"><i data-lucide="refresh-cw"></i><span>Autonomous Self-Healing Success &amp; Response Times (Simulated)</span></div>
+                            </div>
+                            <div class="card-body chart-canvas-wrap">
+                                <canvas id="chart-recovery-ops"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ------------------------------------------------------------
+                     VIEW 8: SETTINGS
+                     ------------------------------------------------------------ -->
+                <section class="view-section" id="view-settings">
+                    <div class="soc-card glow-cyan" style="max-width: 800px; margin: 0 auto;">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i data-lucide="sliders-horizontal"></i>
+                                <span>SOC Engine &amp; AI Configuration</span>
+                            </div>
+                            <span class="badge badge-purple">SYSTEM SETTINGS</span>
+                        </div>
+                        <div class="card-body" style="display: flex; flex-direction: column; gap: 20px;">
+                            <div>
+                                <label style="font-weight: 600; color: #fff; display: block; margin-bottom: 6px;">
+                                    Isolation Forest Anomaly Sensitivity (Contamination Rate: <span id="setting-contam-val" style="color: var(--purple-light);">0.05</span>)
+                                </label>
+                                <input type="range" id="setting-contam-slider" min="0.01" max="0.20" step="0.01" value="0.05" style="width: 100%; accent-color: var(--purple);">
+                                <span style="font-size: 0.72rem; color: var(--text-muted);">Lower values reduce false alarms; higher values increase vigilance for subtle stealth attacks.</span>
+                            </div>
+
+                            <div>
+                                <label style="font-weight: 600; color: #fff; display: block; margin-bottom: 6px;">Telemetry Polling Frequency</label>
+                                <select class="select-cyber" style="width: 100%;">
+                                    <option value="1000">1.0 Second (Real-time Enterprise SOC)</option>
+                                    <option value="3000" selected>3.0 Seconds (Standard Lab Mode)</option>
+                                    <option value="5000">5.0 Seconds (Eco Mode)</option>
+                                </select>
+                            </div>
+
+                            <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle);">
+                                <div>
+                                    <div style="font-weight: 600; color: #fff;">Autonomous Self-Healing Auto-Execution</div>
+                                    <div style="font-size: 0.72rem; color: var(--text-muted);">Automatically engages failover routes when node outage is confirmed.</div>
+                                </div>
+                                <input type="checkbox" id="setting-auto-healing" checked style="width: 20px; height: 20px; accent-color: var(--cyan);">
+                            </div>
+
+                            <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 12px; border-bottom: 1px solid var(--border-subtle);">
+                                <div>
+                                    <div style="font-weight: 600; color: #fff;">Audio Threat Alert Synthesizer</div>
+                                    <div style="font-size: 0.72rem; color: var(--text-muted);">Plays subtle high-tech sound effect when a Critical threat is identified.</div>
+                                </div>
+                                <input type="checkbox" id="setting-sound-alerts" checked style="width: 20px; height: 20px; accent-color: var(--cyan);">
+                            </div>
+
+                            <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                                <button class="btn btn-outline" id="btn-reset-settings">Reset Defaults</button>
+                                <button class="btn btn-cyan" id="btn-save-settings">Save Configurations</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- ================================================================
+         4. GLOBAL MODALS
+         ================================================================ -->
+
+    <!-- Device Details Inspection Modal -->
+    <div class="modal-overlay" id="device-modal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <div class="modal-title" id="dev-modal-title">
+                    <i data-lucide="server"></i>
+                    <span>Device Specifications</span>
+                </div>
+                <button class="modal-close-btn" id="btn-close-device-modal">&times;</button>
+            </div>
+            <div class="modal-body" id="dev-modal-body">
+                <!-- Injected dynamically -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="btn-modal-ping"><i data-lucide="activity"></i> Ping Node</button>
+                <button class="btn btn-purple" id="btn-modal-scan"><i data-lucide="brain-circuit"></i> Run AI Scan</button>
+                <button class="btn btn-red" id="btn-modal-toggle-status"><i data-lucide="power"></i> Simulate Failure</button>
+                <button class="btn btn-cyan" id="btn-close-device-modal-footer">Done</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert / Incident Details Modal -->
+    <div class="modal-overlay" id="alert-modal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <div class="modal-title" id="alert-modal-title">
+                    <i data-lucide="shield-alert"></i>
+                    <span>Security Incident Intelligence</span>
+                </div>
+                <button class="modal-close-btn" id="btn-close-alert-modal">&times;</button>
+            </div>
+            <div class="modal-body" id="alert-modal-body">
+                <!-- Injected dynamically -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="btn-close-alert-modal-footer">Dismiss</button>
+                <button class="btn btn-green" id="btn-modal-resolve-alert"><i data-lucide="check"></i> Resolve Alert</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- ================================================================
+         5. JAVASCRIPT MODULE SCRIPTS
+         ================================================================ -->
+    <script src="js/mock-data.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/network.js"></script>
+    <script src="js/topology.js"></script>
+    <script src="js/threats.js"></script>
+    <script src="js/recovery.js"></script>
+    <script src="js/alerts.js"></script>
+    <script src="js/analytics.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

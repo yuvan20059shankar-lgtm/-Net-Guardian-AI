@@ -1,0 +1,10 @@
+{
+  "mean_bytes_transferred": 502748.6338315217,
+  "std_bytes_transferred": 743685.9793603386,
+  "mean_connection_frequency": 26.4211277173913,
+  "std_connection_frequency": 32.24219372560257,
+  "mean_packet_entropy": 4.852699048913044,
+  "std_packet_entropy": 0.5450731405394179,
+  "mean_average_packet_size": 741.6575951086957,
+  "std_average_packet_size": 308.4831172866818
+}

@@ -1,0 +1,155 @@
+{
+  "dataset_evaluation": {
+    "total_samples": 1600,
+    "columns": [
+      "device_id",
+      "device_name",
+      "timestamp",
+      "packet_count",
+      "average_packet_size",
+      "bytes_transferred",
+      "connection_frequency",
+      "packet_entropy",
+      "inbound_bytes",
+      "outbound_bytes",
+      "connection_duration",
+      "label",
+      "anomaly_type"
+    ],
+    "missing_values": {
+      "device_id": 0,
+      "device_name": 0,
+      "timestamp": 0,
+      "packet_count": 0,
+      "average_packet_size": 0,
+      "bytes_transferred": 0,
+      "connection_frequency": 0,
+      "packet_entropy": 0,
+      "inbound_bytes": 0,
+      "outbound_bytes": 0,
+      "connection_duration": 0,
+      "label": 0,
+      "anomaly_type": 0
+    },
+    "label_distribution": {
+      "NORMAL": 1472,
+      "ANOMALY": 128
+    },
+    "anomaly_type_distribution": {
+      "none": 1472,
+      "port_scan_recon": 22,
+      "unusual_packet_activity_burst": 22,
+      "unusual_packet_sizes_jumbo": 20,
+      "abnormal_duration_slowloris": 19,
+      "traffic_spike_syn_flood": 18,
+      "high_entropy_encrypted_tunnel": 16,
+      "data_exfiltration": 11
+    },
+    "numerical_stats": {
+      "packet_count": {
+        "min": 8.0,
+        "max": 64955.0,
+        "mean": 1145.5,
+        "std": 4979.11
+      },
+      "average_packet_size": {
+        "min": 40.52,
+        "max": 8990.19,
+        "mean": 805.64,
+        "std": 768.32
+      },
+      "bytes_transferred": {
+        "min": 796.0,
+        "max": 14153020.0,
+        "mean": 714608.6,
+        "std": 1564216.61
+      },
+      "connection_frequency": {
+        "min": 0.013,
+        "max": 2680.67,
+        "mean": 50.06,
+        "std": 177.17
+      },
+      "packet_entropy": {
+        "min": 1.623,
+        "max": 7.979,
+        "mean": 4.9,
+        "std": 0.84
+      },
+      "inbound_bytes": {
+        "min": 478.0,
+        "max": 3275019.0,
+        "mean": 299954.58,
+        "std": 479059.25
+      },
+      "outbound_bytes": {
+        "min": 318.0,
+        "max": 12772656.0,
+        "mean": 414654.02,
+        "std": 1231354.81
+      },
+      "connection_duration": {
+        "min": 0.03,
+        "max": 6881.89,
+        "mean": 64.65,
+        "std": 527.73
+      }
+    }
+  },
+  "model_evaluation": {
+    "train_samples": 1280,
+    "test_samples": 320,
+    "test_normal_count": 294,
+    "test_anomaly_count": 26,
+    "true_negatives": 291,
+    "false_positives": 3,
+    "false_negatives": 5,
+    "true_positives": 21,
+    "accuracy": 0.975,
+    "precision": 0.875,
+    "recall": 0.8077,
+    "f1_score": 0.84,
+    "fpr": 0.0102,
+    "fnr": 0.1923,
+    "mean_anomaly_score_nominal": 0.3077,
+    "mean_anomaly_score_anomaly": 0.6455
+  },
+  "latency_benchmarks": {
+    "model_loading_ms": {
+      "min": 34.866,
+      "max": 79.91,
+      "mean": 40.141,
+      "std": 13.276
+    },
+    "feature_extraction_ms": {
+      "min": 0.008,
+      "max": 0.022,
+      "mean": 0.008,
+      "std": 0.002
+    },
+    "single_prediction_ms": {
+      "min": 19.472,
+      "max": 72.741,
+      "mean": 21.472,
+      "std": 7.529
+    },
+    "threat_classification_ms": {
+      "min": 19.486,
+      "max": 21.489,
+      "mean": 19.978,
+      "std": 0.407
+    },
+    "full_ai_pipeline_ms": {
+      "min": 20.944,
+      "max": 32.124,
+      "mean": 22.255,
+      "std": 2.187
+    },
+    "sqlite_report_write_ms": {
+      "min": 63.2,
+      "max": 157.855,
+      "mean": 77.445,
+      "std": 15.997
+    }
+  }
+}
